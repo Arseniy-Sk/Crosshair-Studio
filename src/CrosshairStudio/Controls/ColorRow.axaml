@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:domain="using:CrosshairStudio.Domain"
+             x:Class="CrosshairStudio.Controls.ColorRow"
+             x:DataType="domain:ColorSlot">
+    <StackPanel Spacing="8">
+        <DockPanel LastChildFill="True">
+            <Border DockPanel.Dock="Right"
+                    Width="34" Height="34"
+                    CornerRadius="17"
+                    BorderBrush="#F2FFFFFF"
+                    BorderThickness="2"
+                    Cursor="Hand"
+                    Background="{Binding Current, Converter={StaticResource ArgbToBrush}}"
+                    PointerPressed="Preview_OnPressed"/>
+            <TextBlock Text="{Binding Title}" Classes="caption" VerticalAlignment="Center"/>
+        </DockPanel>
+        <DockPanel>
+            <Button DockPanel.Dock="Right" Classes="quiet" Padding="8,4" Margin="0,0,0,8" CornerRadius="13" MinWidth="32"
+                    Content="+"
+                    Command="{Binding TogglePickerCommand}"/>
+            <ItemsControl ItemsSource="{Binding Swatches}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="domain:ColorSwatchItem">
+                        <Button Width="26" Height="26" Margin="0,0,8,8" Padding="0"
+                                CornerRadius="13"
+                                Command="{Binding $parent[ItemsControl].((domain:ColorSlot)DataContext).PickCommand}"
+                                CommandParameter="{Binding Value}"
+                                Background="{Binding Value, Converter={StaticResource ArgbToBrush}}">
+                            <Border CornerRadius="13"
+                                    BorderThickness="2"
+                                    BorderBrush="{Binding SelectionBrush}"/>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </DockPanel>
+        <StackPanel IsVisible="{Binding IsPickerOpen}" Spacing="8">
+            <TextBox Classes="field" Text="{Binding Hex}" PlaceholderText="#RRGGBB"
+                     LostFocus="Hex_OnLostFocus" KeyDown="Hex_OnKeyDown"/>
+            <Grid ColumnDefinitions="28,*,40">
+                <TextBlock Text="R" Classes="caption" VerticalAlignment="Center"/>
+                <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Red}"/>
+                <TextBlock Grid.Column="2" Text="{Binding Red, StringFormat={}{0:F0}}" HorizontalAlignment="Right"/>
+            </Grid>
+            <Grid ColumnDefinitions="28,*,40">
+                <TextBlock Text="G" Classes="caption" VerticalAlignment="Center"/>
+                <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Green}"/>
+                <TextBlock Grid.Column="2" Text="{Binding Green, StringFormat={}{0:F0}}" HorizontalAlignment="Right"/>
+            </Grid>
+            <Grid ColumnDefinitions="28,*,40">
+                <TextBlock Text="B" Classes="caption" VerticalAlignment="Center"/>
+                <Slider Grid.Column="1" Minimum="0" Maximum="255" Value="{Binding Blue}"/>
+                <TextBlock Grid.Column="2" Text="{Binding Blue, StringFormat={}{0:F0}}" HorizontalAlignment="Right"/>
+            </Grid>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

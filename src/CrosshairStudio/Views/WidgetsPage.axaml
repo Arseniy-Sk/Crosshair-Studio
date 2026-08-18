@@ -1,0 +1,331 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CrosshairStudio.ViewModels"
+             xmlns:domain="using:CrosshairStudio.Domain"
+             xmlns:controls="using:CrosshairStudio.Controls"
+             x:Class="CrosshairStudio.Views.WidgetsPage"
+             x:DataType="vm:MainViewModel"
+             x:Name="WidgetsRoot">
+    <Panel>
+    <Grid RowDefinitions="Auto,*">
+        <Border Classes="card" Margin="0,0,0,12" Padding="16">
+            <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                <StackPanel>
+                    <TextBlock Text="{Binding Loc[widgetsTitle]}" Classes="title"/>
+                    <TextBlock Text="{Binding Loc[widgetsHint]}" Classes="caption" TextWrapping="Wrap" MaxWidth="720" Margin="0,6,16,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Spacing="10" MinWidth="220" VerticalAlignment="Top">
+                    <DockPanel>
+                        <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding Display.ShowCrosshairOverlay}"/>
+                        <TextBlock Text="{Binding Loc[showCrosshair]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                    </DockPanel>
+                    <Button Classes="pill" Content="{Binding OverlayButtonTitle}" Command="{Binding ToggleOverlayCommand}"/>
+                    <Button Classes="quiet" Content="{Binding Loc[addNote]}" Command="{Binding AddNoteCommand}"/>
+                    <Button Classes="quiet" Content="{Binding Loc[createWidget]}" Command="{Binding OpenCreateWidgetCommand}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <ScrollViewer Grid.Row="1" Padding="0,0,4,0">
+            <ItemsControl x:CompileBindings="False" ItemsSource="{Binding Widgets}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="card" Width="360" Margin="0,0,12,12" Padding="16">
+                            <StackPanel Spacing="10">
+                                <DockPanel>
+                                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding Enabled}"/>
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding Hint}" Classes="caption" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </DockPanel>
+                                <Grid ColumnDefinitions="108,*">
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetAnchor], ElementName=WidgetsRoot}" Classes="caption" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding DataContext.Anchors, ElementName=WidgetsRoot}"
+                                              SelectedItem="{Binding Anchor}"/>
+                                </Grid>
+                                <controls:MetricSlider Label="{Binding DataContext.Loc[widgetLayoutX], ElementName=WidgetsRoot}" Minimum="0" Maximum="{Binding DataContext.LayoutMaxX, ElementName=WidgetsRoot}" Default="0" Value="{Binding LayoutX}"/>
+                                <controls:MetricSlider Label="{Binding DataContext.Loc[widgetLayoutY], ElementName=WidgetsRoot}" Minimum="0" Maximum="{Binding DataContext.LayoutMaxY, ElementName=WidgetsRoot}" Default="16" Value="{Binding LayoutY}"/>
+                                <controls:MetricSlider Label="{Binding DataContext.Loc[offsetX], ElementName=WidgetsRoot}" Minimum="-400" Maximum="400" Default="0" Value="{Binding OffsetX}"/>
+                                <controls:MetricSlider Label="{Binding DataContext.Loc[offsetY], ElementName=WidgetsRoot}" Minimum="-400" Maximum="400" Default="16" Value="{Binding OffsetY}"/>
+                                <controls:MetricSlider Label="{Binding DataContext.Loc[labelOpacity], ElementName=WidgetsRoot}" Minimum="0.2" Maximum="1" Default="1" IsPercent="True" Value="{Binding Opacity}"/>
+                                <controls:MetricSlider Label="{Binding DataContext.Loc[widgetScale], ElementName=WidgetsRoot}" Minimum="0.6" Maximum="2" Default="1" Decimals="2" Value="{Binding Scale}"/>
+                                <controls:ColorRow DataContext="{Binding ColorSlot}"/>
+                                <TextBox Classes="field" IsVisible="{Binding IsCustom}" Text="{Binding Name}" PlaceholderText="{Binding DataContext.Loc[designName], ElementName=WidgetsRoot}"/>
+                                <Border IsVisible="{Binding IsCustom}" Background="#14FFFFFF" CornerRadius="12" Padding="10">
+                                    <StackPanel Spacing="4">
+                                        <TextBlock Text="{Binding DataContext.Loc[widgetMakerGuide], ElementName=WidgetsRoot}" FontWeight="SemiBold" FontSize="12"/>
+                                        <TextBlock Text="{Binding DataContext.Loc[widgetMakerBody], ElementName=WidgetsRoot}" Classes="caption" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                                <Grid ColumnDefinitions="108,*" IsVisible="{Binding IsCustom}">
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetLook], ElementName=WidgetsRoot}" Classes="caption" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding DataContext.ChromeOptions, ElementName=WidgetsRoot}"
+                                              SelectedItem="{Binding ChromeChoice}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+                                <Grid ColumnDefinitions="108,*" IsVisible="{Binding IsCustom}">
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetFunction], ElementName=WidgetsRoot}" Classes="caption" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding DataContext.WidgetFunctions, ElementName=WidgetsRoot}"
+                                              SelectedItem="{Binding FunctionChoice}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+                                <Grid ColumnDefinitions="*,Auto,Auto" IsVisible="{Binding IsCustom}">
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetImage], ElementName=WidgetsRoot}" Classes="caption" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    <Button Grid.Column="1" Classes="quiet" Margin="8,0,0,0"
+                                            Content="{Binding DataContext.Loc[widgetImageBrowse], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.BrowseWidgetImageCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Grid.Column="2" Classes="quiet" Margin="6,0,0,0"
+                                            Content="{Binding DataContext.Loc[widgetImageClear], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ClearWidgetImageCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+                                <TextBox Classes="field" IsVisible="{Binding IsNotes}" Text="{Binding Text}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="56"
+                                         PlaceholderText="{Binding DataContext.Loc[widgetNotesText], ElementName=WidgetsRoot}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsNotes}" Label="{Binding DataContext.Loc[widgetNoteW], ElementName=WidgetsRoot}" Minimum="140" Maximum="420" Default="220" Value="{Binding NoteWidth}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsNotes}" Label="{Binding DataContext.Loc[widgetNoteH], ElementName=WidgetsRoot}" Minimum="90" Maximum="360" Default="168" Value="{Binding NoteHeight}"/>
+                                <DockPanel IsVisible="{Binding IsCustom}">
+                                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding UseZoom}"/>
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetUseZoom], ElementName=WidgetsRoot}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                </DockPanel>
+                                <TextBox Classes="field" IsVisible="{Binding IsTemplate}" Text="{Binding Text}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="72"
+                                         PlaceholderText="{Binding DataContext.Loc[widgetTemplatePlaceholder], ElementName=WidgetsRoot}"/>
+                                <Grid ColumnDefinitions="108,*" IsVisible="{Binding IsTemplate}">
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetClick], ElementName=WidgetsRoot}" Classes="caption" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding DataContext.ClickOptions, ElementName=WidgetsRoot}"
+                                              SelectedItem="{Binding ClickChoice}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetZoom], ElementName=WidgetsRoot}" Minimum="1.5" Maximum="8" Default="3" Decimals="1" Value="{Binding Zoom}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetCapture], ElementName=WidgetsRoot}" Minimum="40" Maximum="280" Default="88" Value="{Binding CaptureSize}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetOutput], ElementName=WidgetsRoot}" Minimum="80" Maximum="720" Default="240" Value="{Binding OutputSize}"/>
+                                <Grid ColumnDefinitions="108,*" IsVisible="{Binding IsMagnifier}">
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetZoomSource], ElementName=WidgetsRoot}" Classes="caption" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding DataContext.ZoomSourceOptions, ElementName=WidgetsRoot}"
+                                              SelectedItem="{Binding ZoomSourceChoice}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetSourceX], ElementName=WidgetsRoot}" Minimum="0" Maximum="{Binding DataContext.LayoutMaxX, ElementName=WidgetsRoot}" Default="200" Value="{Binding SourceX}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetSourceY], ElementName=WidgetsRoot}" Minimum="0" Maximum="{Binding DataContext.LayoutMaxY, ElementName=WidgetsRoot}" Default="200" Value="{Binding SourceY}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetLensX], ElementName=WidgetsRoot}" Minimum="0" Maximum="{Binding DataContext.LayoutMaxX, ElementName=WidgetsRoot}" Default="80" Value="{Binding LensX}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetLensY], ElementName=WidgetsRoot}" Minimum="0" Maximum="{Binding DataContext.LayoutMaxY, ElementName=WidgetsRoot}" Default="80" Value="{Binding LensY}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetSourceX], ElementName=WidgetsRoot}" Minimum="-400" Maximum="400" Default="0" Value="{Binding CaptureOffsetX}"/>
+                                <controls:MetricSlider IsVisible="{Binding IsMagnifier}" Label="{Binding DataContext.Loc[widgetSourceY], ElementName=WidgetsRoot}" Minimum="-400" Maximum="400" Default="0" Value="{Binding CaptureOffsetY}"/>
+                                <Grid ColumnDefinitions="108,*" IsVisible="{Binding IsMagnifier}">
+                                    <TextBlock Text="{Binding DataContext.Loc[widgetZoomTrigger], ElementName=WidgetsRoot}" Classes="caption" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="1"
+                                              ItemsSource="{Binding DataContext.ZoomTriggerOptions, ElementName=WidgetsRoot}"
+                                              SelectedItem="{Binding ZoomTriggerChoice}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsMagnifier}">
+                                    <Button Classes="quiet"
+                                            Content="{Binding TriggerTitle}"
+                                            Command="{Binding DataContext.BindWidgetKeyCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Classes="quiet"
+                                            Content="{Binding DataContext.Loc[widgetKeyClear], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ClearWidgetKeyCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsTemplate}">
+                                    <Button Classes="quiet"
+                                            Content="{Binding TriggerTitle}"
+                                            Command="{Binding DataContext.BindWidgetKeyCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Classes="quiet"
+                                            Content="{Binding DataContext.Loc[widgetKeyClear], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ClearWidgetKeyCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                                <Button Classes="quiet" HorizontalAlignment="Left" IsVisible="{Binding IsMagnifier}"
+                                        Content="{Binding DataContext.Loc[widgetLensCenter], ElementName=WidgetsRoot}"
+                                        Command="{Binding DataContext.CenterMagnifierCommand, ElementName=WidgetsRoot}"
+                                        CommandParameter="{Binding}"/>
+                                <Button Classes="quiet" HorizontalAlignment="Left" IsVisible="{Binding IsMagnifier}"
+                                        Content="{Binding DataContext.Loc[widgetMagnifierToggle], ElementName=WidgetsRoot}"
+                                        Command="{Binding DataContext.ToggleMagnifierCommand, ElementName=WidgetsRoot}"
+                                        CommandParameter="{Binding}"/>
+                                <DockPanel IsVisible="{Binding IsCustom}">
+                                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding ListedInWorkshop}"/>
+                                    <TextBlock Text="{Binding DataContext.Loc[showInWorkshop], ElementName=WidgetsRoot}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                </DockPanel>
+                                <Button Classes="danger" HorizontalAlignment="Left" IsVisible="{Binding CanRemove}"
+                                        Content="{Binding DataContext.Loc[removeWidget], ElementName=WidgetsRoot}"
+                                        Command="{Binding DataContext.RemoveCustomWidgetCommand, ElementName=WidgetsRoot}"
+                                        CommandParameter="{Binding}"/>
+                                <TextBox Classes="field" IsVisible="{Binding IsCounter}" Text="{Binding Text}" PlaceholderText="{Binding DataContext.Loc[widgetCounterLabel], ElementName=WidgetsRoot}"/>
+                                <TextBox Classes="field" IsVisible="{Binding IsPing}" Text="{Binding Host}" PlaceholderText="{Binding DataContext.Loc[widgetHost], ElementName=WidgetsRoot}"/>
+                                <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsCounter}">
+                                    <Button Classes="quiet" Content="–" Width="36"
+                                            Command="{Binding DataContext.DropCounterCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                    <TextBlock Text="{Binding Count}" VerticalAlignment="Center" FontWeight="SemiBold" MinWidth="28" TextAlignment="Center"/>
+                                    <Button Classes="quiet" Content="+" Width="36"
+                                            Command="{Binding DataContext.NudgeCounterCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Classes="quiet"
+                                            Content="{Binding DataContext.Loc[widgetReset], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ResetCounterCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                                <StackPanel Spacing="8" IsVisible="{Binding IsScore}">
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <Button Classes="quiet" Content="–" Width="36"
+                                                Command="{Binding DataContext.DropScoreLeftCommand, ElementName=WidgetsRoot}"
+                                                CommandParameter="{Binding}"/>
+                                        <TextBlock Text="{Binding ScoreLeft}" VerticalAlignment="Center" FontWeight="SemiBold" MinWidth="28" TextAlignment="Center"/>
+                                        <Button Classes="quiet" Content="+" Width="36"
+                                                Command="{Binding DataContext.NudgeScoreLeftCommand, ElementName=WidgetsRoot}"
+                                                CommandParameter="{Binding}"/>
+                                        <TextBlock Text="—" VerticalAlignment="Center" Opacity="0.5"/>
+                                        <Button Classes="quiet" Content="–" Width="36"
+                                                Command="{Binding DataContext.DropScoreRightCommand, ElementName=WidgetsRoot}"
+                                                CommandParameter="{Binding}"/>
+                                        <TextBlock Text="{Binding ScoreRight}" VerticalAlignment="Center" FontWeight="SemiBold" MinWidth="28" TextAlignment="Center"/>
+                                        <Button Classes="quiet" Content="+" Width="36"
+                                                Command="{Binding DataContext.NudgeScoreRightCommand, ElementName=WidgetsRoot}"
+                                                CommandParameter="{Binding}"/>
+                                    </StackPanel>
+                                    <Button Classes="quiet" HorizontalAlignment="Left"
+                                            Content="{Binding DataContext.Loc[widgetReset], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ResetScoreCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                                <Grid ColumnDefinitions="*,Auto" IsVisible="{Binding IsCountdown}">
+                                    <controls:MetricSlider Label="{Binding DataContext.Loc[widgetSeconds], ElementName=WidgetsRoot}" Minimum="5" Maximum="180" Default="40" Value="{Binding CountdownSeconds}"/>
+                                    <Button Grid.Column="1" Classes="quiet" Margin="8,0,0,0"
+                                            Content="{Binding DataContext.Loc[widgetStart], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ToggleCountdownCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsStopwatch}">
+                                    <Button Classes="quiet"
+                                            Content="{Binding DataContext.Loc[widgetStart], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ToggleStopwatchCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Classes="quiet"
+                                            Content="{Binding DataContext.Loc[widgetReset], ElementName=WidgetsRoot}"
+                                            Command="{Binding DataContext.ResetStopwatchCommand, ElementName=WidgetsRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+    <Border IsVisible="{Binding IsCreateWidgetOpen}"
+            Background="#CC111113"
+            ZIndex="20"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Border Classes="card" Width="520" Padding="22" HorizontalAlignment="Center" VerticalAlignment="Center" MaxHeight="680">
+            <ScrollViewer>
+            <StackPanel Spacing="12">
+                <TextBlock Text="{Binding Loc[createWidget]}" FontWeight="SemiBold" FontSize="18"/>
+                <TextBlock Text="{Binding Loc[createWidgetHint]}" Classes="caption" TextWrapping="Wrap"/>
+                <TextBox Classes="field" Text="{Binding DraftWidgetName}" PlaceholderText="{Binding Loc[designName]}"/>
+                <Grid ColumnDefinitions="108,*">
+                    <TextBlock Text="{Binding Loc[widgetLook]}" Classes="caption" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding ChromeOptions}" SelectedItem="{Binding DraftChromeChoice}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Title}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+                <Grid ColumnDefinitions="108,*">
+                    <TextBlock Text="{Binding Loc[widgetFunction]}" Classes="caption" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding WidgetFunctions}" SelectedItem="{Binding DraftFunctionChoice}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Title}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+                <TextBlock Text="{Binding Loc[widgetTokens]}" Classes="caption"/>
+                <ItemsControl ItemsSource="{Binding TemplateTokens}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Classes="quiet" Margin="0,0,6,6" Padding="8,4" FontSize="11"
+                                    Content="{Binding}"
+                                    Command="{Binding DataContext.InsertDraftTokenCommand, ElementName=WidgetsRoot}"
+                                    CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBox Classes="field" Height="88" AcceptsReturn="True" TextWrapping="Wrap"
+                         Text="{Binding DraftWidgetText}"
+                         PlaceholderText="{Binding Loc[widgetTemplatePlaceholder]}"/>
+                <Grid ColumnDefinitions="108,*">
+                    <TextBlock Text="{Binding Loc[widgetClick]}" Classes="caption" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding ClickOptions}" SelectedItem="{Binding DraftClickChoice}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Title}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+                <DockPanel>
+                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding DraftUseZoom}"/>
+                    <TextBlock Text="{Binding Loc[widgetUseZoom]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </DockPanel>
+                <DockPanel>
+                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding DraftWidgetListed}"/>
+                    <TextBlock Text="{Binding Loc[showInWorkshop]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </DockPanel>
+                <Grid ColumnDefinitions="*,*" Margin="0,8,0,0">
+                    <Button Classes="quiet" Content="{Binding Loc[btnCancel]}" Command="{Binding CancelCreateWidgetCommand}" Margin="0,0,8,0"/>
+                    <Button Grid.Column="1" Classes="pill" Content="{Binding Loc[btnCreate]}" Command="{Binding CreateCustomWidgetCommand}"/>
+                </Grid>
+            </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Border>
+    </Panel>
+</UserControl>

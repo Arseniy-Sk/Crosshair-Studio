@@ -1,0 +1,50 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:CrosshairStudio.Controls"
+        x:Class="CrosshairStudio.Overlay.HudWindow"
+        Title="HUD"
+        WindowDecorations="None"
+        ShowInTaskbar="False"
+        Topmost="True"
+        CanResize="False"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        Width="180"
+        Height="36"
+        ShowActivated="False">
+    <Panel>
+        <controls:HudView x:Name="Visual"/>
+        <Border x:Name="Sticky"
+                IsVisible="False"
+                CornerRadius="4"
+                ClipToBounds="True"
+                BorderBrush="#33000000"
+                BorderThickness="1"
+                Background="#FFE566">
+            <DockPanel>
+                <Border x:Name="StickyBar"
+                        DockPanel.Dock="Top"
+                        Height="22"
+                        Background="#33000000"
+                        Cursor="SizeAll"
+                        PointerPressed="StickyBar_OnPressed">
+                    <TextBlock x:Name="StickyCaption"
+                               Margin="8,0"
+                               FontSize="11"
+                               Foreground="#80322A0C"
+                               VerticalAlignment="Center"
+                               Text="Note"/>
+                </Border>
+                <TextBox x:Name="StickyEditor"
+                         Background="Transparent"
+                         BorderThickness="0"
+                         Foreground="#322A0C"
+                         CaretBrush="#322A0C"
+                         AcceptsReturn="True"
+                         TextWrapping="Wrap"
+                         Padding="8,6"
+                         FontSize="14"/>
+            </DockPanel>
+        </Border>
+    </Panel>
+</Window>

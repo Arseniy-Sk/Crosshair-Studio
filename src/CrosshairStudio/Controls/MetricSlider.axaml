@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="using:CrosshairStudio.Controls"
+             x:Class="CrosshairStudio.Controls.MetricSlider"
+             x:Name="Root">
+    <Grid ColumnDefinitions="108,*,56">
+        <TextBlock Text="{Binding Label, ElementName=Root}"
+                   Classes="caption"
+                   VerticalAlignment="Center"
+                   TextWrapping="Wrap"/>
+        <Slider Grid.Column="1"
+                Minimum="{Binding Minimum, ElementName=Root}"
+                Maximum="{Binding Maximum, ElementName=Root}"
+                Value="{Binding Value, ElementName=Root, Mode=TwoWay}"
+                VerticalAlignment="Center"
+                DoubleTapped="Slider_OnDoubleTapped"/>
+        <Panel Grid.Column="2" Margin="8,0,0,0" VerticalAlignment="Center">
+            <TextBlock IsVisible="{Binding !IsEditing, ElementName=Root}"
+                       Text="{Binding DisplayText, ElementName=Root}"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Cursor="Hand"
+                       PointerPressed="Value_OnPressed"/>
+            <TextBox x:Name="EditBox"
+                     IsVisible="{Binding IsEditing, ElementName=Root}"
+                     Classes="field"
+                     Padding="4,2"
+                     FontSize="12"
+                     MinHeight="0"
+                     HorizontalContentAlignment="Right"
+                     LostFocus="Edit_OnLostFocus"
+                     KeyDown="Edit_OnKeyDown"/>
+        </Panel>
+    </Grid>
+</UserControl>

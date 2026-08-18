@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="CrosshairStudio.Overlay.CaptureGuideWindow"
+        Title="Zoom source"
+        WindowDecorations="None"
+        ShowInTaskbar="False"
+        Topmost="True"
+        CanResize="False"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        Width="88"
+        Height="88"
+        ShowActivated="False">
+    <Border CornerRadius="4"
+            BorderBrush="#FFFFD60A"
+            BorderThickness="2"
+            Background="#22FFD60A"
+            BoxShadow="none">
+        <TextBlock Text="SRC"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="11"
+                   FontWeight="SemiBold"
+                   Foreground="#FFFFD60A"
+                   IsHitTestVisible="False"/>
+    </Border>
+</Window>

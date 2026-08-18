@@ -1,0 +1,76 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CrosshairStudio.ViewModels"
+             xmlns:controls="using:CrosshairStudio.Controls"
+             x:Class="CrosshairStudio.Views.WorkshopPage"
+             x:DataType="vm:MainViewModel"
+             x:Name="WorkshopRoot">
+    <Grid RowDefinitions="Auto,*">
+        <Border Classes="card" Margin="0,0,0,12" Padding="16">
+            <StackPanel Spacing="12">
+                <DockPanel>
+                    <TextBlock Text="{Binding Loc[workshopTitle]}" Classes="title"/>
+                    <TextBlock DockPanel.Dock="Right" Text="{Binding Workshop.Status}" Classes="caption" VerticalAlignment="Center"/>
+                </DockPanel>
+                <TextBlock Text="{Binding Loc[workshopHint]}" Classes="caption" TextWrapping="Wrap" MaxWidth="760"/>
+                <Grid ColumnDefinitions="Auto,Auto,*,Auto,Auto">
+                    <Button Classes="quiet" Classes.active="{Binding Workshop.IsCrosshairs}"
+                            Content="{Binding Loc[workshopCrosshairs]}"
+                            Command="{Binding Workshop.ShowCrosshairsCommand}"
+                            Margin="0,0,8,0"/>
+                    <Button Grid.Column="1" Classes="quiet" Classes.active="{Binding Workshop.IsWidgets}"
+                            Content="{Binding Loc[workshopWidgets]}"
+                            Command="{Binding Workshop.ShowWidgetsCommand}"
+                            Margin="0,0,8,0"/>
+                    <TextBox Grid.Column="2" Classes="field" Margin="0,0,8,0"
+                             Text="{Binding Workshop.Query}"
+                             PlaceholderText="{Binding Loc[workshopSearch]}"
+                             KeyDown="Search_OnKeyDown"/>
+                    <Button Grid.Column="3" Classes="quiet" Content="{Binding Loc[workshopSortLikes]}"
+                            Command="{Binding Workshop.SortLikesCommand}" Margin="0,0,8,0"/>
+                    <Button Grid.Column="4" Classes="quiet" Content="{Binding Loc[workshopSortNew]}"
+                            Command="{Binding Workshop.SortNewCommand}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+        <ScrollViewer Grid.Row="1" Padding="0,0,4,0">
+            <ItemsControl x:CompileBindings="False" ItemsSource="{Binding Workshop.Items}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Classes="card" Width="280" Margin="0,0,12,12" Padding="14">
+                            <StackPanel Spacing="8">
+                                <Border Height="88" CornerRadius="12" Background="#0A0A0B" ClipToBounds="True" IsVisible="{Binding IsCrosshair}">
+                                    <controls:CrosshairView Crosshair="{Binding Preview}"
+                                                            UsePhysicalPixels="False"
+                                                            PreviewScale="1.2"/>
+                                </Border>
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Description}" Classes="caption" TextWrapping="Wrap" MaxHeight="40" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding Author}" Classes="caption" Opacity="0.7"/>
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right" Classes="pill" Padding="14,6"
+                                            Content="{Binding DataContext.Loc[workshopAdd], ElementName=WorkshopRoot}"
+                                            Command="{Binding DataContext.Workshop.AddCommand, ElementName=WorkshopRoot}"
+                                            CommandParameter="{Binding}"/>
+                                    <Button Classes="quiet" Padding="10,6"
+                                            Command="{Binding DataContext.Workshop.LikeCommand, ElementName=WorkshopRoot}"
+                                            CommandParameter="{Binding}">
+                                        <StackPanel Orientation="Horizontal" Spacing="6">
+                                            <TextBlock Text="♥" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding LikeCount}" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DockPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

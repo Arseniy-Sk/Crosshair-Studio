@@ -1,0 +1,86 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:CrosshairStudio.ViewModels"
+        x:Class="CrosshairStudio.Overlay.OverlayEditorWindow"
+        x:DataType="vm:MainViewModel"
+        x:Name="OverlayRoot"
+        Title="{Binding Loc[overlayEditorTitle]}"
+        WindowDecorations="None"
+        ShowInTaskbar="False"
+        Topmost="True"
+        CanResize="False"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent"
+        Width="420"
+        MaxHeight="760"
+        SizeToContent="Height"
+        ShowActivated="True"
+        KeyDown="OnKeyDown">
+    <Border Classes="card" Margin="8" Padding="18" CornerRadius="22">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Spacing="8">
+                <TextBlock Text="{Binding Loc[overlayEditorTitle]}" FontSize="20" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding OverlayEditorHint}" Classes="caption" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding Loc[overlayEditNotes]}" Classes="caption" TextWrapping="Wrap"/>
+                <Button Classes="quiet" Content="{Binding Loc[addNote]}" Command="{Binding AddNoteCommand}" HorizontalAlignment="Left"/>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Spacing="8" Margin="0,14,0,0">
+                <Button Classes="pill" Content="{Binding Loc[overlayEditorDone]}" Command="{Binding CloseOverlayEditorCommand}" HorizontalAlignment="Stretch"/>
+                <Button Classes="quiet" Content="{Binding Loc[overlayHide]}" Command="{Binding HideOverlaysFromEditorCommand}" HorizontalAlignment="Stretch"/>
+            </StackPanel>
+            <ScrollViewer Margin="0,14,0,0" MaxHeight="520">
+                <ItemsControl x:CompileBindings="False" ItemsSource="{Binding Widgets}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Margin="0,0,0,10" Spacing="6">
+                                <DockPanel>
+                                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding Enabled}"/>
+                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                </DockPanel>
+                                <TextBox Classes="field"
+                                         IsVisible="{Binding IsNotes}"
+                                         Text="{Binding Text}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         MinHeight="64"
+                                         PlaceholderText="{Binding Hint}"/>
+                                <TextBox Classes="field"
+                                         IsVisible="{Binding IsTemplate}"
+                                         Text="{Binding Text}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         MinHeight="72"
+                                         PlaceholderText="{Binding DataContext.Loc[widgetTemplatePlaceholder], ElementName=OverlayRoot}"/>
+                                <StackPanel Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsMagnifier}">
+                                    <ComboBox MinWidth="180"
+                                              ItemsSource="{Binding DataContext.ZoomTriggerOptions, ElementName=OverlayRoot}"
+                                              SelectedItem="{Binding ZoomTriggerChoice}">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Title}"/>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <Button Classes="quiet"
+                                            Content="{Binding TriggerTitle}"
+                                            Command="{Binding DataContext.BindWidgetKeyCommand, ElementName=OverlayRoot}"
+                                            CommandParameter="{Binding}"/>
+                                </StackPanel>
+                                <Button Classes="quiet" HorizontalAlignment="Left"
+                                        IsVisible="{Binding IsMagnifier}"
+                                        Content="{Binding DataContext.Loc[widgetLensCenter], ElementName=OverlayRoot}"
+                                        Command="{Binding DataContext.CenterMagnifierCommand, ElementName=OverlayRoot}"
+                                        CommandParameter="{Binding}"/>
+                                <Button Classes="quiet" HorizontalAlignment="Left"
+                                        IsVisible="{Binding IsMagnifier}"
+                                        Content="{Binding DataContext.Loc[widgetMagnifierToggle], ElementName=OverlayRoot}"
+                                        Command="{Binding DataContext.ToggleMagnifierCommand, ElementName=OverlayRoot}"
+                                        CommandParameter="{Binding}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</Window>

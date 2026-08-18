@@ -1,0 +1,330 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:presentation="using:CrosshairStudio.Presentation"
+             x:Class="CrosshairStudio.App"
+             RequestedThemeVariant="Dark">
+    <Application.Resources>
+        <presentation:ArgbToBrushConverter x:Key="ArgbToBrush"/>
+        <presentation:EqualsConverter x:Key="EqualsConverter"/>
+        <Color x:Key="Bg">#000000</Color>
+        <Color x:Key="Surface">#111113</Color>
+        <Color x:Key="Grouped">#1C1C1E</Color>
+        <Color x:Key="Fill">#2C2C2E</Color>
+        <Color x:Key="Hairline">#28FFFFFF</Color>
+        <Color x:Key="Label">#F5F5F7</Color>
+        <Color x:Key="Secondary">#8E8E93</Color>
+        <Color x:Key="Accent">#0A84FF</Color>
+        <SolidColorBrush x:Key="BgBrush" Color="{StaticResource Bg}"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource Surface}"/>
+        <SolidColorBrush x:Key="GroupedBrush" Color="{StaticResource Grouped}"/>
+        <SolidColorBrush x:Key="FillBrush" Color="{StaticResource Fill}"/>
+        <SolidColorBrush x:Key="HairlineBrush" Color="{StaticResource Hairline}"/>
+        <SolidColorBrush x:Key="LabelBrush" Color="{StaticResource Label}"/>
+        <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource Secondary}"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Accent}"/>
+    </Application.Resources>
+    <Application.Styles>
+        <FluentTheme />
+        <Style Selector="Window">
+            <Setter Property="FontFamily" Value="Inter, Segoe UI, SF Pro Text, .AppleSystemUIFont, Ubuntu, Cantarell, sans-serif"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource LabelBrush}"/>
+            <Setter Property="Background" Value="{StaticResource BgBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="LetterSpacing" Value="0.8"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryBrush}"/>
+        </Style>
+        <Style Selector="TextBlock.caption">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource SecondaryBrush}"/>
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background">
+                <RadialGradientBrush Center="16%,6%" GradientOrigin="16%,6%" RadiusX="1.2" RadiusY="1.05">
+                    <GradientStop Color="#2EFFFFFF" Offset="0"/>
+                    <GradientStop Color="#10FFFFFF" Offset="0.28"/>
+                    <GradientStop Color="#D41C1C1E" Offset="0.62"/>
+                    <GradientStop Color="#F2141416" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#30FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="26"/>
+            <Setter Property="Padding" Value="16"/>
+            <Setter Property="BoxShadow" Value="0 20 48 0 #59000000"/>
+        </Style>
+        <Style Selector="Border.glass">
+            <Setter Property="Background">
+                <RadialGradientBrush Center="30%,0%" GradientOrigin="20%,-10%" RadiusX="1.1" RadiusY="0.9">
+                    <GradientStop Color="#24FFFFFF" Offset="0"/>
+                    <GradientStop Color="#E6111113" Offset="0.45"/>
+                    <GradientStop Color="#F50E0E10" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter>
+            <Setter Property="BorderBrush" Value="#2AFFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="28"/>
+        </Style>
+        <Style Selector="Border.preview">
+            <Setter Property="CornerRadius" Value="24"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#24FFFFFF"/>
+            <Setter Property="Background">
+                <RadialGradientBrush Center="50%,42%" GradientOrigin="38%,28%" RadiusX="0.72" RadiusY="0.72">
+                    <GradientStop Color="#4A4A50" Offset="0"/>
+                    <GradientStop Color="#2C2C30" Offset="0.45"/>
+                    <GradientStop Color="#141416" Offset="1"/>
+                </RadialGradientBrush>
+            </Setter>
+        </Style>
+        <Style Selector="Border.shapeTile">
+            <Setter Property="Background" Value="#1C1C1E"/>
+            <Setter Property="BorderBrush" Value="#22FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="8,10,8,8"/>
+            <Setter Property="Width" Value="84"/>
+            <Setter Property="Height" Value="92"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:pointerover Border.shapeTile">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="BorderBrush" Value="#38FFFFFF"/>
+        </Style>
+        <Style Selector="Border.shapeTile.selected">
+            <Setter Property="Background" Value="#3A3A3C"/>
+            <Setter Property="BorderBrush" Value="#D8FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:selected Border.shapeTile">
+            <Setter Property="Background" Value="#3A3A3C"/>
+            <Setter Property="BorderBrush" Value="#D8FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+        </Style>
+        <Style Selector="Button.tile">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="CornerRadius" Value="16"/>
+        </Style>
+        <Style Selector="Button.tile:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="Button.tile:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource LabelBrush}"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:selected:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:focus /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:selected /template/ Border">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+        </Style>
+        <Style Selector="ListBox.shapes ListBoxItem:selected TextBlock">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Opacity" Value="1"/>
+        </Style>
+        <Style Selector="ListBox.profiles">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0,0,0,28"/>
+        </Style>
+        <Style Selector="ListBox.profiles ListBoxItem">
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource LabelBrush}"/>
+            <Setter Property="FocusAdorner" Value="{x:Null}"/>
+        </Style>
+        <Style Selector="ListBox.profiles ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#242426"/>
+        </Style>
+        <Style Selector="ListBox.profiles ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2C2C2E"/>
+        </Style>
+        <Style Selector="ListBox.profiles ListBoxItem:selected:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3A3A3C"/>
+        </Style>
+        <Style Selector="ListBox.profiles ListBoxItem:selected">
+            <Setter Property="Background" Value="#2C2C2E"/>
+        </Style>
+        <Style Selector="Button.quiet">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="Foreground" Value="{StaticResource LabelBrush}"/>
+            <Setter Property="BorderBrush" Value="#22FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="CornerRadius" Value="14"/>
+        </Style>
+        <Style Selector="Button.quiet.active">
+            <Setter Property="Background" Value="#3A3A3C"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.chrome">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="MinWidth" Value="32"/>
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="MaxWidth" Value="32"/>
+            <Setter Property="MaxHeight" Value="32"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Background" Value="#22FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Button.chrome /template/ ContentPresenter">
+            <Setter Property="Background" Value="#22FFFFFF"/>
+            <Setter Property="CornerRadius" Value="8"/>
+        </Style>
+        <Style Selector="Button.chrome:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2C2C2E"/>
+        </Style>
+        <Style Selector="Button.chrome:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3A3A3C"/>
+        </Style>
+        <Style Selector="Button.chrome-close:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#C42B1C"/>
+        </Style>
+        <Style Selector="Button.chrome-close:pointerover Path">
+            <Setter Property="Stroke" Value="#FFFFFF"/>
+        </Style>
+        <Style Selector="Button.quiet:pointerover">
+            <Setter Property="Background" Value="#3A3A3C"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.quiet:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3A3A3C"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.quiet:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#48484A"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.nav">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#C7C7CC"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="Button.nav:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.nav.active">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.pill">
+            <Setter Property="Background" Value="#F5F5F7"/>
+            <Setter Property="Foreground" Value="#000000"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="18,10"/>
+            <Setter Property="CornerRadius" Value="18"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="Button.pill:pointerover">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.pill:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+            <Setter Property="BorderBrush" Value="#40FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+        <Style Selector="Button.pill:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3A3A3C"/>
+            <Setter Property="Foreground" Value="#F5F5F7"/>
+        </Style>
+        <Style Selector="Button.danger">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF453A"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+        </Style>
+        <Style Selector="ScrollViewer">
+            <Setter Property="AllowAutoHide" Value="False"/>
+        </Style>
+        <Style Selector="ScrollBar:vertical">
+            <Setter Property="Width" Value="4"/>
+            <Setter Property="MinWidth" Value="4"/>
+            <Setter Property="MaxWidth" Value="4"/>
+            <Setter Property="Margin" Value="0,10,1,10"/>
+            <Setter Property="Opacity" Value="0.45"/>
+        </Style>
+        <Style Selector="ScrollBar:horizontal">
+            <Setter Property="Height" Value="4"/>
+            <Setter Property="MinHeight" Value="4"/>
+            <Setter Property="MaxHeight" Value="4"/>
+            <Setter Property="Opacity" Value="0.45"/>
+        </Style>
+        <Style Selector="ScrollBar /template/ RepeatButton">
+            <Setter Property="IsVisible" Value="False"/>
+            <Setter Property="Width" Value="0"/>
+            <Setter Property="Height" Value="0"/>
+        </Style>
+        <Style Selector="ScrollBar /template/ Thumb">
+            <Setter Property="Background" Value="#66FFFFFF"/>
+        </Style>
+        <Style Selector="ToggleSwitch">
+            <Setter Property="OnContent" Value=""/>
+            <Setter Property="OffContent" Value=""/>
+        </Style>
+        <Style Selector="TextBox.field">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HairlineBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="10,8"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="#2C2C2E"/>
+            <Setter Property="BorderBrush" Value="{StaticResource HairlineBrush}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+        </Style>
+    </Application.Styles>
+</Application>

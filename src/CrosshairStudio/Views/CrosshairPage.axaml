@@ -1,0 +1,328 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CrosshairStudio.ViewModels"
+             xmlns:controls="using:CrosshairStudio.Controls"
+             xmlns:domain="using:CrosshairStudio.Domain"
+             x:Class="CrosshairStudio.Views.CrosshairPage"
+             x:DataType="vm:MainViewModel"
+             x:Name="PageRoot">
+    <Panel>
+    <Grid ColumnDefinitions="*,400">
+        <Border Classes="card" Margin="0,0,10,0" Padding="0">
+            <Grid RowDefinitions="Auto,*,Auto,Auto">
+                <Grid Margin="18,16,18,8" ColumnDefinitions="*,Auto,Auto">
+                    <StackPanel>
+                        <TextBlock Text="{Binding Loc[preview]}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{Binding CurrentCrosshair.Name}" Classes="caption" IsVisible="{Binding IsUserDesign}"/>
+                        <TextBlock Text="{Binding Loc[actualSize]}" Classes="caption" IsVisible="{Binding !IsUserDesign}"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="quiet" Content="{Binding Loc[btnReset]}" Command="{Binding ResetCrosshairCommand}" Margin="0,0,8,0"/>
+                    <Button Grid.Column="2" Classes="quiet" Content="{Binding Loc[btnSave]}" Command="{Binding SaveCrosshairCommand}"/>
+                </Grid>
+                <Border Grid.Row="1" Classes="preview" Margin="18,0,18,12">
+                    <Panel>
+                        <Ellipse Width="260" Height="260">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#24FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#00FFFFFF" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <Ellipse Width="220" Height="220" Stroke="#18FFFFFF" StrokeThickness="1" StrokeDashArray="2,8"/>
+                        <controls:CrosshairView Crosshair="{Binding CurrentCrosshair}"
+                                                UsePhysicalPixels="{Binding Display.UsePhysicalPixels}"
+                                                MonitorScale="{Binding SelectedMonitor.Scaling, FallbackValue=1}"
+                                                AllowPartDrag="True"
+                                                SelectedPart="{Binding SelectedPart, Mode=TwoWay}"/>
+                    </Panel>
+                </Border>
+                <TextBlock Grid.Row="2" Text="{Binding Loc[dragHint]}" Classes="caption" Margin="22,0,22,8" TextWrapping="Wrap"/>
+                <Button Grid.Row="3"
+                        Classes="pill"
+                        Margin="18,0,18,16"
+                        Content="{Binding OverlayButtonTitle}"
+                        Command="{Binding ToggleOverlayCommand}"/>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Classes="card" Padding="12,14,4,14">
+            <Grid RowDefinitions="Auto,*">
+                <UniformGrid Columns="4" Margin="0,0,0,12">
+                    <Button Classes="quiet" Content="{Binding Loc[tabShape]}" Command="{Binding SelectSectionCommand}" CommandParameter="Shape"/>
+                    <Button Classes="quiet" Content="{Binding Loc[tabLook]}" Command="{Binding SelectSectionCommand}" CommandParameter="Look"/>
+                    <Button Classes="quiet" Content="{Binding Loc[tabLayers]}" Command="{Binding SelectSectionCommand}" CommandParameter="Layers"/>
+                    <Button Classes="quiet" Content="{Binding Loc[tabScreen]}" Command="{Binding SelectSectionCommand}" CommandParameter="Screen"/>
+                </UniformGrid>
+                <ScrollViewer Grid.Row="1" Padding="0,0,2,0">
+                    <StackPanel Spacing="14" Margin="0,0,10,8">
+                        <StackPanel IsVisible="{Binding IsShapeSection}" Spacing="10">
+                            <TextBlock Text="{Binding Loc[sectionShape]}" Classes="section"/>
+                            <ListBox Classes="shapes"
+                                     ItemsSource="{Binding Shapes}"
+                                     SelectedItem="{Binding SelectedShape}">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="domain:ShapeOption">
+                                        <Border Classes="shapeTile">
+                                            <StackPanel Spacing="6">
+                                                <Border Height="52" CornerRadius="10" Background="#0A0A0B" ClipToBounds="True">
+                                                    <controls:CrosshairView Crosshair="{Binding Preview}"
+                                                                            UsePhysicalPixels="False"
+                                                                            PreviewScale="1.05"/>
+                                                </Border>
+                                                <TextBlock Text="{Binding Title}" FontSize="11" Opacity="0.86" HorizontalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <TextBlock Text="{Binding Loc[sectionDesigns]}" Classes="section" Margin="0,8,0,0"/>
+                            <ItemsControl x:CompileBindings="False" ItemsSource="{Binding DesignTiles}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Classes="tile" Padding="0" Background="Transparent" BorderThickness="0"
+                                                Command="{Binding DataContext.SelectDesignCommand, ElementName=PageRoot}"
+                                                CommandParameter="{Binding}">
+                                            <Border Classes="shapeTile" Classes.selected="{Binding IsSelected}">
+                                                <Panel>
+                                                    <StackPanel Spacing="6" IsVisible="{Binding !IsAdd}">
+                                                        <Border Height="52" CornerRadius="10" Background="#0A0A0B" ClipToBounds="True">
+                                                            <controls:CrosshairView Crosshair="{Binding Design}"
+                                                                                    UsePhysicalPixels="False"
+                                                                                    PreviewScale="1.05"/>
+                                                        </Border>
+                                                        <TextBlock Text="{Binding Design.Name}" FontSize="11" Opacity="0.86" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                                    </StackPanel>
+                                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" IsVisible="{Binding IsAdd}">
+                                                        <TextBlock Text="+" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center" Opacity="0.9"/>
+                                                        <TextBlock Text="{Binding DataContext.Loc[addDesign], ElementName=PageRoot}" FontSize="11" Opacity="0.7" HorizontalAlignment="Center"/>
+                                                    </StackPanel>
+                                                </Panel>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <StackPanel IsVisible="{Binding IsUserDesign}" Spacing="8">
+                                <TextBlock Text="{Binding Loc[sectionProfile]}" Classes="section"/>
+                                <TextBox Classes="field" Text="{Binding CurrentCrosshair.Name}" PlaceholderText="{Binding Loc[designName]}"/>
+                                <TextBox Classes="field" Height="72" AcceptsReturn="True" TextWrapping="Wrap"
+                                         Text="{Binding CurrentCrosshair.Description}"
+                                         PlaceholderText="{Binding Loc[designDescription]}"/>
+                                <DockPanel>
+                                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ListedInWorkshop}"/>
+                                    <TextBlock Text="{Binding Loc[showInWorkshop]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                </DockPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Button Classes="quiet" Content="{Binding Loc[btnExport]}" Command="{Binding ExportDesignCommand}"/>
+                                    <Button Classes="quiet" Content="{Binding Loc[btnImport]}" Command="{Binding ImportDesignCommand}"/>
+                                </StackPanel>
+                                <Button Classes="danger" Content="{Binding Loc[deleteDesign]}" Command="{Binding DeleteDesignCommand}" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding Loc[sectionColor]}" Classes="section"/>
+                            <controls:ColorRow DataContext="{Binding ShapeColorSlot}"/>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsLookSection}" Spacing="12">
+                            <TextBlock Text="{Binding Loc[sectionColor]}" Classes="section"/>
+                            <ItemsControl x:CompileBindings="False" ItemsSource="{Binding ColorSlots}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <controls:ColorRow Margin="0,0,0,12"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Text="{Binding Loc[sectionSize]}" Classes="section"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelSize]}" Minimum="2" Maximum="120" Default="18" Value="{Binding CurrentCrosshair.Size}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelThickness]}" Minimum="0.5" Maximum="12" Default="2" Decimals="1" Value="{Binding CurrentCrosshair.Thickness}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelOpacity]}" Minimum="0.15" Maximum="1" Default="1" IsPercent="True" Value="{Binding CurrentCrosshair.Opacity}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelGap]}" Minimum="0" Maximum="40" Default="3" IsVisible="{Binding ShowGap}" Value="{Binding CurrentCrosshair.Gap}"/>
+                            <DockPanel IsVisible="{Binding ShowGap}">
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.UseAsymmetricGap}"/>
+                                <TextBlock Text="{Binding Loc[labelSplitGap]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[labelGapH]}" Minimum="0" Maximum="40" Default="3" IsVisible="{Binding CurrentCrosshair.UseAsymmetricGap}" Value="{Binding CurrentCrosshair.HorizontalGap}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelGapV]}" Minimum="0" Maximum="40" Default="3" IsVisible="{Binding CurrentCrosshair.UseAsymmetricGap}" Value="{Binding CurrentCrosshair.VerticalGap}"/>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.UseIndependentAxes}"/>
+                                <TextBlock Text="{Binding Loc[labelAxes]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[labelWidth]}" Minimum="2" Maximum="120" Default="18" IsVisible="{Binding CurrentCrosshair.UseIndependentAxes}" Value="{Binding CurrentCrosshair.HorizontalLength}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelHeight]}" Minimum="2" Maximum="120" Default="18" IsVisible="{Binding CurrentCrosshair.UseIndependentAxes}" Value="{Binding CurrentCrosshair.VerticalLength}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelRotate]}" Minimum="0" Maximum="360" Default="0" Suffix="°" Value="{Binding CurrentCrosshair.Rotation}"/>
+                            <Grid ColumnDefinitions="108,*">
+                                <TextBlock Text="{Binding Loc[labelLineCap]}" Classes="caption" VerticalAlignment="Center"/>
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding LineCaps}" SelectedItem="{Binding CurrentCrosshair.LineCap}"/>
+                            </Grid>
+                            <controls:MetricSlider Label="{Binding Loc[labelArc]}" Minimum="20" Maximum="360" Default="360" Suffix="°" IsVisible="{Binding ShowArcOption}" Value="{Binding CurrentCrosshair.ArcDegrees}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelCorners]}" Minimum="0" Maximum="40" Default="0" IsVisible="{Binding ShowCornerRadius}" Value="{Binding CurrentCrosshair.CornerRadius}"/>
+                            <DockPanel IsVisible="{Binding ShowFill}">
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.FillShape}"/>
+                                <TextBlock Text="{Binding Loc[labelFill]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowOutline}"/>
+                                <TextBlock Text="{Binding Loc[labelOutline]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[labelOutline]}" Minimum="0.5" Maximum="8" Default="2" Decimals="1" IsVisible="{Binding CurrentCrosshair.ShowOutline}" Value="{Binding CurrentCrosshair.OutlineThickness}"/>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowCenterDot}"/>
+                                <TextBlock Text="{Binding Loc[labelCenterDot]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <Grid ColumnDefinitions="108,*" IsVisible="{Binding ShowDotOptions}">
+                                <TextBlock Text="{Binding Loc[labelDotShape]}" Classes="caption" VerticalAlignment="Center"/>
+                                <ComboBox Grid.Column="1" ItemsSource="{Binding DotShapes}" SelectedItem="{Binding CurrentCrosshair.DotShape}"/>
+                            </Grid>
+                            <controls:MetricSlider Label="{Binding Loc[labelDotSize]}" Minimum="1" Maximum="16" Default="3" IsVisible="{Binding ShowDotOptions}" Value="{Binding CurrentCrosshair.DotSize}"/>
+                            <StackPanel IsVisible="{Binding ShowArmToggles}" Spacing="8">
+                                <TextBlock Text="{Binding Loc[sectionArms]}" Classes="section"/>
+                                <WrapPanel>
+                                    <ToggleSwitch IsChecked="{Binding CurrentCrosshair.ShowTopLine}" OnContent="{Binding Loc[armTop]}" OffContent="{Binding Loc[armTop]}" Margin="0,0,12,8"/>
+                                    <ToggleSwitch IsChecked="{Binding CurrentCrosshair.ShowBottomLine}" OnContent="{Binding Loc[armBottom]}" OffContent="{Binding Loc[armBottom]}" Margin="0,0,12,8"/>
+                                    <ToggleSwitch IsChecked="{Binding CurrentCrosshair.ShowLeftLine}" OnContent="{Binding Loc[armLeft]}" OffContent="{Binding Loc[armLeft]}" Margin="0,0,12,8"/>
+                                    <ToggleSwitch IsChecked="{Binding CurrentCrosshair.ShowRightLine}" OnContent="{Binding Loc[armRight]}" OffContent="{Binding Loc[armRight]}"/>
+                                </WrapPanel>
+                            </StackPanel>
+                            <StackPanel IsVisible="{Binding ShowCustomMetrics}" Spacing="8">
+                                <controls:MetricSlider Label="{Binding Loc[labelLength]}" Minimum="2" Maximum="60" Default="8" Value="{Binding CurrentCrosshair.LineLength}"/>
+                                <controls:MetricSlider Label="{Binding Loc[labelLine]}" Minimum="0.5" Maximum="12" Default="2" Decimals="1" Value="{Binding CurrentCrosshair.LineThickness}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsLayersSection}" Spacing="12">
+                            <TextBlock Text="{Binding Loc[sectionExtras]}" Classes="section"/>
+                            <TextBlock Text="{Binding PartsBoundHint}" Classes="caption" TextWrapping="Wrap"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <ComboBox ItemsSource="{Binding PartKinds}" SelectedItem="{Binding SelectedPartKind}">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate x:DataType="domain:PartKindOption">
+                                            <TextBlock Text="{Binding Title}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                <Button Grid.Column="1" Classes="quiet" Content="{Binding Loc[addPart]}" Command="{Binding AddPartCommand}" Margin="8,0,0,0"/>
+                            </Grid>
+                            <ListBox Classes="profiles" ItemsSource="{Binding CurrentCrosshair.ExtraParts}" SelectedItem="{Binding SelectedPart}" MaxHeight="140">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate x:DataType="domain:CrosshairPart">
+                                        <TextBlock Text="{Binding Title}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                            <Button Classes="danger" Content="{Binding Loc[removePart]}" Command="{Binding RemovePartCommand}" HorizontalAlignment="Left"/>
+                            <StackPanel IsVisible="{Binding HasSelectedPart}" Spacing="10">
+                                <DockPanel>
+                                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding SelectedPart.Enabled}"/>
+                                    <TextBlock Text="{Binding Loc[partEnabled]}" VerticalAlignment="Center"/>
+                                </DockPanel>
+                                <controls:MetricSlider Label="{Binding Loc[labelSize]}" Minimum="4" Maximum="80" Default="28" Value="{Binding SelectedPart.Size}"/>
+                                <controls:MetricSlider Label="{Binding Loc[labelThickness]}" Minimum="0.5" Maximum="8" Default="1.5" Decimals="1" Value="{Binding SelectedPart.Thickness}"/>
+                                <controls:MetricSlider Label="{Binding Loc[labelGap]}" Minimum="0" Maximum="30" Default="4" Value="{Binding SelectedPart.Gap}"/>
+                                <controls:MetricSlider Label="{Binding Loc[labelRotate]}" Minimum="0" Maximum="360" Default="0" Suffix="°" Value="{Binding SelectedPart.Rotation}"/>
+                                <controls:MetricSlider Label="{Binding Loc[labelOpacity]}" Minimum="0.15" Maximum="1" Default="1" IsPercent="True" Value="{Binding SelectedPart.Opacity}"/>
+                                <controls:ColorRow DataContext="{Binding SelectedPartColorSlot}"/>
+                                <controls:MetricSlider Label="{Binding Loc[labelPartX]}" Minimum="-80" Maximum="80" Default="0" Value="{Binding SelectedPart.OffsetX}"/>
+                                <controls:MetricSlider Label="{Binding Loc[labelPartY]}" Minimum="-80" Maximum="80" Default="0" Value="{Binding SelectedPart.OffsetY}"/>
+                                <TextBlock Text="{Binding Loc[dragHint]}" Classes="caption" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding Loc[sectionRings]}" Classes="section"/>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowInnerCircle}"/>
+                                <TextBlock Text="{Binding Loc[labelInner]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[labelSize]}" Minimum="4" Maximum="80" Default="10" IsVisible="{Binding CurrentCrosshair.ShowInnerCircle}" Value="{Binding CurrentCrosshair.InnerCircleSize}"/>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowOuterRing}"/>
+                                <TextBlock Text="{Binding Loc[labelOuter]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[labelSize]}" Minimum="8" Maximum="120" Default="28" IsVisible="{Binding CurrentCrosshair.ShowOuterRing}" Value="{Binding CurrentCrosshair.OuterRingSize}"/>
+                            <TextBlock Text="{Binding Loc[sectionMarks]}" Classes="section"/>
+                            <DockPanel IsVisible="{Binding ShowTicksOption}">
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowTicks}"/>
+                                <TextBlock Text="{Binding Loc[labelTicks]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <DockPanel IsVisible="{Binding ShowTicksOption}">
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowMidDots}"/>
+                                <TextBlock Text="{Binding Loc[labelMidDots]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowSideBrackets}"/>
+                                <TextBlock Text="{Binding Loc[labelBrackets]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <TextBlock Text="{Binding Loc[sectionMotion]}" Classes="section"/>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.ShowGlow}"/>
+                                <TextBlock Text="{Binding Loc[labelBloom]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[labelAmount]}" Minimum="1" Maximum="18" Default="6" IsVisible="{Binding CurrentCrosshair.ShowGlow}" Value="{Binding CurrentCrosshair.GlowAmount}"/>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding CurrentCrosshair.EnablePulse}"/>
+                                <TextBlock Text="{Binding Loc[labelPulse]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[labelSpeed]}" Minimum="0.2" Maximum="4" Default="1.2" Decimals="1" IsVisible="{Binding CurrentCrosshair.EnablePulse}" Value="{Binding CurrentCrosshair.PulseSpeed}"/>
+                            <TextBlock Text="{Binding Loc[sectionOffset]}" Classes="section"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelAimX]}" Minimum="-40" Maximum="40" Default="0" Value="{Binding CurrentCrosshair.OffsetX}"/>
+                            <controls:MetricSlider Label="{Binding Loc[labelAimY]}" Minimum="-40" Maximum="40" Default="0" Value="{Binding CurrentCrosshair.OffsetY}"/>
+                        </StackPanel>
+
+                        <StackPanel IsVisible="{Binding IsScreenSection}" Spacing="12">
+                            <TextBlock Text="{Binding Loc[sectionDisplay]}" Classes="section"/>
+                            <ComboBox ItemsSource="{Binding Monitors}" SelectedItem="{Binding SelectedMonitor}"/>
+                            <Button Classes="quiet" Content="{Binding Loc[refreshDisplays]}" Command="{Binding RefreshDisplaysCommand}"/>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding Display.AlwaysOnTop}"/>
+                                <TextBlock Text="{Binding Loc[alwaysOnTop]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding Display.ClickThrough}"/>
+                                <TextBlock Text="{Binding Loc[clickThrough]}" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <DockPanel>
+                                <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding Display.UsePhysicalPixels}"/>
+                                <TextBlock Text="{Binding Loc[physicalPixels]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            </DockPanel>
+                            <controls:MetricSlider Label="{Binding Loc[offsetX]}" Minimum="-200" Maximum="200" Default="0" Value="{Binding Display.OffsetX}"/>
+                            <controls:MetricSlider Label="{Binding Loc[offsetY]}" Minimum="-200" Maximum="200" Default="0" Value="{Binding Display.OffsetY}"/>
+                            <TextBlock Text="{Binding Loc[screenHint]}" Classes="caption" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+    <Border IsVisible="{Binding IsCreateOpen}"
+            Background="#CC111113"
+            ZIndex="20"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Border Classes="card" Width="400" Padding="22" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Spacing="12">
+                <TextBlock Text="{Binding Loc[createDesign]}" FontWeight="SemiBold" FontSize="18"/>
+                <TextBlock Text="{Binding Loc[createHint]}" Classes="caption" TextWrapping="Wrap"/>
+                <TextBox Classes="field" Text="{Binding DraftName}" PlaceholderText="{Binding Loc[designName]}"/>
+                <TextBox Classes="field" Height="88" AcceptsReturn="True" TextWrapping="Wrap"
+                         Text="{Binding DraftDescription}"
+                         PlaceholderText="{Binding Loc[designDescription]}"/>
+                <DockPanel>
+                    <ToggleSwitch DockPanel.Dock="Right" IsChecked="{Binding DraftListed}"/>
+                    <TextBlock Text="{Binding Loc[showInWorkshop]}" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                </DockPanel>
+                <Grid ColumnDefinitions="*,*" Margin="0,8,0,0">
+                    <Button Classes="quiet" Content="{Binding Loc[btnCancel]}" Command="{Binding CancelCreateDesignCommand}" Margin="0,0,8,0"/>
+                    <Button Grid.Column="1" Classes="pill" Content="{Binding Loc[btnCreate]}" Command="{Binding CreateDesignCommand}"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Border>
+    </Panel>
+</UserControl>

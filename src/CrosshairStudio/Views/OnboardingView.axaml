@@ -1,0 +1,49 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CrosshairStudio.ViewModels"
+             xmlns:controls="using:CrosshairStudio.Controls"
+             x:Class="CrosshairStudio.Views.OnboardingView"
+             x:DataType="vm:OnboardingViewModel">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <TextBlock Text="{Binding Loc[appName]}" Classes="caption"/>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,340" Margin="0,24,0,24">
+            <StackPanel VerticalAlignment="Center" Spacing="14" MaxWidth="440">
+                <TextBlock Text="{Binding CurrentTitle}" Classes="title"/>
+                <TextBlock Text="{Binding CurrentBody}" Classes="caption" TextWrapping="Wrap" FontSize="16" LineHeight="24"/>
+                <TextBlock Text="{Binding CurrentCaption}" Opacity="0.7" FontSize="12"/>
+            </StackPanel>
+            <Border Grid.Column="1" Classes="preview" Margin="24,0,0,0" CornerRadius="28">
+                <Panel>
+                    <Ellipse Width="220" Height="220">
+                        <Ellipse.Fill>
+                            <RadialGradientBrush>
+                                <GradientStop Color="#18FFFFFF" Offset="0"/>
+                                <GradientStop Color="#00FFFFFF" Offset="1"/>
+                            </RadialGradientBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Ellipse Width="180" Height="180" Stroke="#18FFFFFF" StrokeThickness="1" StrokeDashArray="2,6"/>
+                    <controls:CrosshairView Crosshair="{Binding Demo}" UsePhysicalPixels="False" PreviewScale="1.6"/>
+                </Panel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto,Auto">
+            <TextBlock Text="{Binding PageLabel}" Classes="caption" VerticalAlignment="Center"/>
+            <Button Grid.Column="1"
+                    Classes="quiet"
+                    Content="{Binding Loc[skip]}"
+                    IsVisible="{Binding ShowSkip}"
+                    Command="{Binding SkipCommand}"
+                    Margin="0,0,8,0"
+                    Width="110"/>
+            <Button Grid.Column="2"
+                    Classes="pill"
+                    Content="{Binding ActionTitle}"
+                    Command="{Binding NextCommand}"
+                    Width="168"
+                    HorizontalAlignment="Right"/>
+        </Grid>
+    </Grid>
+</UserControl>

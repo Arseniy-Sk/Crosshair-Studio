@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:CrosshairStudio.ViewModels"
+             x:Class="CrosshairStudio.Views.SettingsPage"
+             x:DataType="vm:MainViewModel">
+    <StackPanel MaxWidth="520" Spacing="16">
+        <TextBlock Text="{Binding Loc[navSettings]}" Classes="title"/>
+        <Border Classes="card" Padding="18">
+            <StackPanel Spacing="12">
+                <TextBlock Text="{Binding Loc[settingsLanguage]}" Classes="section"/>
+                <ComboBox ItemsSource="{Binding Loc.Languages}" SelectedItem="{Binding SelectedLanguage}"/>
+                <TextBlock Text="{Binding Loc[settingsAbout]}" Classes="caption" TextWrapping="Wrap"/>
+                <TextBlock Text="{Binding Loc[settingsName]}" Classes="section" Margin="0,8,0,0"/>
+                <TextBox Classes="field" Text="{Binding DisplayName}" PlaceholderText="{Binding Loc[settingsName]}"/>
+                <TextBlock Text="{Binding Loc[settingsWorkshopUrl]}" Classes="section" Margin="0,8,0,0"/>
+                <TextBox Classes="field" Text="{Binding WorkshopUrl}"/>
+            </StackPanel>
+        </Border>
+        <Border Classes="card" Padding="18">
+            <StackPanel Spacing="10">
+                <TextBlock Text="{Binding Loc[settingsHotkey]}" Classes="section"/>
+                <TextBlock Text="{Binding Loc[settingsHotkeyBody]}" Classes="caption" TextWrapping="Wrap"/>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Classes="quiet" Margin="8,0,0,0"
+                            Content="{Binding Loc[hotkeyReset]}"
+                            Command="{Binding ResetOverlayHotkeyCommand}"/>
+                    <Button Classes="pill" HorizontalAlignment="Stretch"
+                            Content="{Binding HotkeyButtonTitle}"
+                            Command="{Binding BindOverlayHotkeyCommand}"/>
+                </DockPanel>
+            </StackPanel>
+        </Border>
+        <Border Classes="card" Padding="18">
+            <StackPanel Spacing="10">
+                <TextBlock Text="{Binding Loc[settingsPerf]}" Classes="section"/>
+                <TextBlock Text="{Binding Loc[settingsPerfBody]}" Classes="caption" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</UserControl>
